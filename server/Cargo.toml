@@ -1,0 +1,7 @@
+[package]
+name = "theremins-server"
+version = "0.1.0"
+authors = ["runarberg <runarberg@zoho.com>"]
+
+[dependencies]
+ws = "0.2.1"

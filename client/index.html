@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Theremins</title>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <canvas id="canvas"></canvas>
+    <form id="controls">
+      <input type="number" name="min-frequency" value="110"
+             min="20" max="22000">
+      <input type="number" name="max-frequency" value="1760"
+             min="20" max="22000">
+      <span id="frequency-slider"></span>
+    </form>
+    <script src="audio-context.js"></script>
+    <script src="main.js"></script>
+  </body>
+</html>
