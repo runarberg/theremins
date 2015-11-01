@@ -11,10 +11,8 @@ function audioContext() {
   function data(arr) {
     var update = sineWaves.slice(0, arr.length);
     var exit = sineWaves.slice(arr.length);
-    var enter = arr.slice(
-      sineWaves.length,
-      arr.length - sineWaves.length
-    ).map(function(d) {return new SineWave(d); });
+    var enter = arr.slice(sineWaves.length, arr.length)
+          .map(function(d) { return new SineWave(d); });
 
     update.forEach(function(sine, i) { sine.update(arr[i]); });
     enter.forEach(function(sine) { sineWaves.push(sine); });
@@ -51,7 +49,7 @@ function audioContext() {
     });
 
     Object.defineProperty(this, "stop", {
-      value() {
+      value: function() {
         oscillator.stop();
         gainNode.disconnect(audioCtx.destination);
       }
