@@ -5,7 +5,7 @@ function audioContext() {
   var AudioContext = window.AudioContext || window.webkitAudioContext;
   var audioCtx = new AudioContext();
 
-  var sineWaves = [new SineWave({muted: true})];
+  var sineWaves = [];
 
   Object.defineProperty(self, "data", { value: data });
   function data(arr) {
@@ -25,26 +25,18 @@ function audioContext() {
   function SineWave(descriptor) {
     var oscillator = audioCtx.createOscillator();
     var gainNode = audioCtx.createGain();
-    var muted = descriptor && descriptor.muted || false;
 
     oscillator.type = "sine";
     oscillator.frequency.value = descriptor && descriptor.frequency || 440;
     gainNode.gain.value = descriptor && descriptor.volume || 1;
 
-    if (!muted) {
-      oscillator.connect(gainNode);
-    }
+    oscillator.connect(gainNode);
     gainNode.connect(audioCtx.destination);
 
     Object.defineProperty(this, "update", {
       value: function(d) {
         oscillator.frequency.value = d.frequency;
         gainNode.gain.value = d.volume;
-        if (d.mute !== muted) {
-          var method = d.mute === true ? "disconnect" : "connect";
-          muted = d.mute;
-          oscillator[method](gainNode);
-        }
       }
     });
 
