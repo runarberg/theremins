@@ -7,3 +7,8 @@ html, body {
 canvas {
     display: block;
 }
+
+.main-controls {
+    /* No controls, for now. */
+    display: none;
+}

@@ -119,27 +119,38 @@ function app() {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight - controls.clientHeight;
     var ctx = canvas.getContext('2d');
-
-    ctx.fillStyle = "green";
+    var rainbow = [
+      "red", "orange", "yellow", "green", "blue", "indigo", "violet"
+    ];
+    ctx.fillStyle = background();
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     updateCanvas();
 
     function updateCanvas() {
-      ctx.fillStyle = "green";
+      ctx.fillStyle = background();
       ctx.globalAlpha = 1;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       var hertz = 27.5;
-      var innerHertz = hertz * twelve_root_2;
-      do {
-        while (innerHertz < 2 * hertz) {
-          markLine("#33AA33", innerHertz);
-          innerHertz *= twelve_root_2;
-        }
-        markLine("white", hertz);
+      var innerHertz;
+      while (hertz < +maxFrequency.value) {
+        innerHertz = hertz;
+        markLine(rainbow[0], innerHertz);    // A
+        markLine(rainbow[0], innerHertz *= twelve_root_2);    // A♯
+        markLine(rainbow[1], innerHertz *= twelve_root_2);    // B
+        markLine(rainbow[2], innerHertz *= twelve_root_2);    // C
+        markLine(rainbow[2], innerHertz *= twelve_root_2);    // C♯
+        markLine(rainbow[3], innerHertz *= twelve_root_2);    // D
+        markLine(rainbow[3], innerHertz *= twelve_root_2);    // D♯
+        markLine(rainbow[4], innerHertz *= twelve_root_2);    // E
+        markLine(rainbow[5], innerHertz *= twelve_root_2);    // F
+        markLine(rainbow[5], innerHertz *= twelve_root_2);    // F♯
+        markLine(rainbow[6], innerHertz *= twelve_root_2);    // G
+        markLine(rainbow[6], innerHertz *= twelve_root_2);    // G♯
+
         hertz *= 2;
-      } while (hertz < +maxFrequency.value);
+      }
 
       sineWaves.forEach(function(d) {
         markTone(d);
@@ -148,6 +159,23 @@ function app() {
       window.setTimeout(function() {
        window.requestAnimationFrame(updateCanvas); 
       }, 60);
+    }
+
+    function background() {
+      var gradient = ctx.createRadialGradient(
+        canvas.width / 2, 0, canvas.height,
+        canvas.width / 2, 0, 0
+      );
+
+      gradient.addColorStop(0, "lightblue");
+      gradient.addColorStop(0.21, "lightblue");
+      rainbow.forEach(function(color, i) {
+        gradient.addColorStop(0.22 + i * 0.01, color);
+      });
+      gradient.addColorStop(0.22 + rainbow.length * 0.01, "lightblue");
+      gradient.addColorStop(1, "lightblue");
+
+      return gradient;
     }
 
     function markLine(color, frequency) {
@@ -174,7 +202,11 @@ function app() {
       ctx.strokeStyle = "black";
       ctx.globalAlpha = 1;
       ctx.beginPath();
-      ctx.arc(x * canvas.width, y * canvas.height, 15, 0, τ);
+      ctx.arc(
+        minmax(0, 1, x) * canvas.width,
+        y * canvas.height,
+        15, 0, τ
+      );
       ctx.stroke();
       ctx.fill();
       return ctx.restore();
@@ -186,6 +218,10 @@ function byId(id) { return document.getElementById(id); }
 
 function forEach(iterable, fn) {
   return Array.prototype.forEach.call(iterable, fn);
+}
+
+function minmax(min, max, x) {
+  return Math.max(min, Math.min(max, x));
 }
 
 function flatten(arrays) {
