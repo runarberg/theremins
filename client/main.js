@@ -1,6 +1,7 @@
 var τ = 2 * Math.PI;
+var twelve_root_2 = Math.pow(2, 1/12);
 
-var ws = new WebSocket("ws://192.168.2.101:3012");
+var ws = new WebSocket("ws://192.168.2.101:8001");
 ws.onopen = app;
 
 function app() {
@@ -130,8 +131,12 @@ function app() {
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       var hertz = 27.5;
+      var innerHertz = hertz * twelve_root_2;
       do {
-        linspace(12, hertz, 2 * hertz).forEach(markLine("#33AA33"));
+        while (innerHertz < 2 * hertz) {
+          markLine("#33AA33", innerHertz);
+          innerHertz *= twelve_root_2;
+        }
         markLine("white", hertz);
         hertz *= 2;
       } while (hertz < +maxFrequency.value);
@@ -177,13 +182,6 @@ function app() {
   }
 }
 
-function linspace(n, a, b) {
-  var arr = new Float64Array(n);
-  var mean = (b - a) / n;
-  for (var i = 0; i < n; i += 1) {
-    arr[i] = a + i * mean;
-  }
-  return arr;
 function byId(id) { return document.getElementById(id); }
 
 function forEach(iterable, fn) {

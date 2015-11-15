@@ -43,7 +43,7 @@ impl Handler for Server {
 }
 
 fn main() {
-    let host = "192.168.2.101:3012";
+    let host = "0.0.0.0:8001";
     let sines = Rc::new(RefCell::new(HashMap::new()));
     if let Err(error) = listen(host, |out| {
         Server {out: out, sines: sines.clone()}
