@@ -4,4 +4,5 @@ version = "0.1.0"
 authors = ["runarberg <runarberg@zoho.com>"]
 
 [dependencies]
+hyper = "0.6.16"
 ws = "0.3.1"

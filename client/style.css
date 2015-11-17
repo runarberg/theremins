@@ -8,6 +8,18 @@ canvas {
     display: block;
 }
 
+.main-header {
+    display: flex;
+}
+
+.main-nav ul {
+    list-style: none;
+}
+
+.main-nav ul li {
+    display: inline-block;
+}
+
 .main-controls {
     /* No controls, for now. */
     display: none;

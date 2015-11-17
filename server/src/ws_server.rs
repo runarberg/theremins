@@ -1,10 +1,8 @@
-extern crate ws;
-
 use std::collections::HashMap;
 use std::rc::Rc;
 use std::cell::RefCell;
 
-use self::ws::{listen, Handler, Sender, Result, Message, CloseCode, Error};
+use ws::{listen, Handler, Sender, Result, Message, CloseCode, Error};
 
 struct Server {
     out: Sender,
@@ -40,7 +38,7 @@ impl Handler for Server {
     }
 }
 
-pub fn server(host: &str) {
+pub fn serve(host: &str) {
     let sines = Rc::new(RefCell::new(HashMap::new()));
     if let Err(error) = listen(host, |out| {
         Server {out: out, sines: sines.clone()}

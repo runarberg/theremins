@@ -8,12 +8,14 @@ function app() {
   "use strict";
   var canvas = byId("canvas");
   var controls = byId("controls");
+  var header = byId("header");
   var minFrequency = controls.querySelector("input[name='min-frequency']");
   var maxFrequency = controls.querySelector("input[name='max-frequency']");
 
   window.addEventListener("resize", function() {
     canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight - controls.clientHeight;
+    canvas.height = window.innerHeight -
+      controls.clientHeight - header.clientHeight;
   });
 
   var pointers = new Map();
@@ -47,8 +49,8 @@ function app() {
 
   canvas.addEventListener("mousedown", function(e) {
     pointers.set("mouse_0", {
-      x: e.clientX / canvas.width,
-      y: e.clientY / canvas.height
+      x: (e.clientX - canvas.offsetLeft) / canvas.width,
+      y: (e.clientY - canvas.offsetTop) / canvas.height
     });
   });
 
@@ -59,8 +61,8 @@ function app() {
   canvas.addEventListener("mousemove", function(e) {
     var mouse = pointers.get("mouse_0");
     if (mouse) {
-      mouse.x = e.clientX / canvas.width;
-      mouse.y = e.clientY / canvas.height;
+      mouse.x = (e.clientX - canvas.offsetLeft) / canvas.width;
+      mouse.y = (e.clientY - canvas.offsetTop) / canvas.height;
     }
   });
 
@@ -117,7 +119,8 @@ function app() {
 
   function draw() {
     canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight - controls.clientHeight;
+    canvas.height = window.innerHeight -
+      controls.clientHeight - header.clientHeight;
     var ctx = canvas.getContext('2d');
     var rainbow = [
       "red", "orange", "yellow", "green", "blue", "indigo", "violet"
