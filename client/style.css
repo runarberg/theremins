@@ -1,7 +1,13 @@
 html, body {
+    background: aliceblue;
     height: 100%;
     margin: 0;
     padding: 0;
+}
+
+header a {
+    color: inherit;
+    text-decoration: none;
 }
 
 canvas {
@@ -9,7 +15,15 @@ canvas {
 }
 
 .main-header {
+    align-items: center;
+    background: #236929;
+    color: aliceblue;
     display: flex;
+}
+
+.main-header h1 {
+    font-family: sans-serif;
+    margin: 1ex 1em;
 }
 
 .main-nav ul {
@@ -18,9 +32,62 @@ canvas {
 
 .main-nav ul li {
     display: inline-block;
+    padding: 0.5ex 1ex;
+}
+
+.main-nav ul li + li {
+    border-left: 1px solid aliceblue;
 }
 
 .main-controls {
     /* No controls, for now. */
     display: none;
+}
+
+.list-section a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.list-section .rooms {
+    list-style: none;
+    font-size: 1.5em;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+.list-section li,
+.list-section h2 {
+    display: flex;
+    align-items: center;
+}
+
+.list-section li {
+    margin: 0.75ex;
+}
+
+.list-section li:nth-child(7n + 0) { color: red; }
+.list-section li:nth-child(7n + 1) { color: orange; }
+.list-section li:nth-child(7n + 2) { color: darkkhaki; }
+.list-section li:nth-child(7n + 3) { color: green; }
+.list-section li:nth-child(7n + 4) { color: blue; }
+.list-section li:nth-child(7n + 5) { color: indigo; }
+.list-section li:nth-child(7n + 6) { color: violet; }
+
+.list-section .name-header,
+.list-section .count-header,
+.list-section .name,
+.list-section .count {
+    flex-basis: 50%;
+}
+
+.list-section .name-header,
+.list-section .name {
+    text-align: right;
+}
+
+.list-section .count-header,
+.list-section .count {
+    padding-left: 1.2em;
 }

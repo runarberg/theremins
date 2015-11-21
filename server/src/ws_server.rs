@@ -12,12 +12,27 @@ struct Server {
 }
 
 impl Server {
+    fn list_connections(&mut self) {
+        let json_seq = self.connections.borrow().values()
+            .map(|&(ref room, _)| format!("\"{}\"", room))
+            .collect::<Vec<_>>()
+            .join(",");
+
+        for t in self.connections.borrow().values() {
+            if t.0 == "/list" {
+                let _ = t.1.send(Message::text(format!("[{}]", json_seq)));
+            }
+        }
+    }
+
     fn cleanup(&mut self)  {
         let token = self.out.token();
         (*self.sines.borrow_mut())
             .remove(&token.as_usize());
         (*self.connections.borrow_mut())
             .remove(&token.as_usize());
+
+        self.list_connections();
     }
 }
 
@@ -33,6 +48,8 @@ impl Handler for Server {
                     (room, out)
                 );
         }
+
+        self.list_connections();
         Ok(())
     }
 

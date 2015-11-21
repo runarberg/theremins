@@ -42,9 +42,19 @@ fn handle_get(req: Request, mut res: Response) {
                 res.send(include_bytes!("../../client/main.js")).unwrap();
             },
 
+            "/list.js" => {
+                res.headers_mut().set(content_type!(Javascript));
+                res.send(include_bytes!("../../client/list.js")).unwrap();
+            },
+
             "/help" => {
                 res.headers_mut().set(ContentType::html());
                 res.send(b"<h1>About!</h1>").unwrap();
+            },
+
+            "/list" => {
+                res.headers_mut().set(ContentType::html());
+                res.send(include_bytes!("../../client/list.html")).unwrap();
             },
 
             _ => {
