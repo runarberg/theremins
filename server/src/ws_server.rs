@@ -2,46 +2,82 @@ use std::collections::HashMap;
 use std::rc::Rc;
 use std::cell::RefCell;
 
-use ws::{listen, Handler, Sender, Result, Message, CloseCode, Error};
+use ws::{listen, Handler, Handshake, Sender, Result, Message, CloseCode, Error};
 
 struct Server {
     out: Sender,
-    sines: Rc<RefCell<HashMap<usize, String>>>
+    room: String,
+    sines: Rc<RefCell<HashMap<usize, (String, String)>>>,
+    connections: Rc<RefCell<HashMap<usize, (String, Sender)>>>,
+}
+
+impl Server {
+    fn cleanup(&mut self)  {
+        let token = self.out.token();
+        (*self.sines.borrow_mut())
+            .remove(&token.as_usize());
+        (*self.connections.borrow_mut())
+            .remove(&token.as_usize());
+    }
 }
 
 impl Handler for Server {
+    fn on_open(&mut self, handshake: Handshake) -> Result<()> {
+        if let Ok(resource) = handshake.request.resource() {
+            let room = resource.to_string();
+            let out = self.out.clone();
+            self.room = resource.to_string();
+            (*self.connections.borrow_mut())
+                .insert(
+                    self.out.token().as_usize(),
+                    (room, out)
+                );
+        }
+        Ok(())
+    }
+
     fn on_message(&mut self, msg: Message) -> Result<()> {
         if let Ok(text) = msg.into_text() {
             (*self.sines.borrow_mut())
-                .insert(self.out.token().as_usize(), text);
+                .insert(self.out.token().as_usize(), (self.room.clone(), text));
             let sines = self.sines.borrow();
             let json_seq = sines.values()
-                .map(|s| s.as_str())
+                .filter(|&&(ref room, _)| *room == self.room)
+                .map(|&(_, ref sine)| sine.as_str())
                 .collect::<Vec<_>>()
                 .join(",");
-            self.out.broadcast(Message::text(format!("[{}]", json_seq)))
+
+            for t in self.connections.borrow().values().into_iter() {
+                if t.0 == self.room {
+                    let _ = t.1.send(Message::text(format!("[{}]", json_seq)));
+                }
+            }
+            Ok(())
         } else {
             Ok(())
         }
     }
 
     fn on_close(&mut self, _: CloseCode, _: &str) {
-        let token = self.out.token();
-        (*self.sines.borrow_mut())
-            .remove(&token.as_usize());
+        self.cleanup();
     }
 
     fn on_error(&mut self, _: Error) {
-        let token = self.out.token();
-        (*self.sines.borrow_mut())
-            .remove(&token.as_usize());
+        self.cleanup();
     }
 }
 
 pub fn serve(host: &str) {
     let sines = Rc::new(RefCell::new(HashMap::new()));
+    let connections = Rc::new(RefCell::new(HashMap::new()));
+
     if let Err(error) = listen(host, |out| {
-        Server {out: out, sines: sines.clone()}
+        Server {
+            out: out,
+            room: "".to_string(),
+            sines: sines.clone(),
+            connections: connections.clone(),
+        }
     }) {
         println!("{:?}", error);
     };

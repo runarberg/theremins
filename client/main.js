@@ -1,7 +1,8 @@
 var τ = 2 * Math.PI;
 var twelve_root_2 = Math.pow(2, 1/12);
+var message_cache = "";
 
-var ws = new WebSocket("ws://192.168.2.101:8001");
+var ws = new WebSocket("ws://192.168.2.101:8001" + window.location.pathname);
 ws.onopen = app;
 
 function app() {
@@ -111,7 +112,12 @@ function app() {
         });
       });
 
-      ws.send(JSON.stringify(arr));
+      var message = JSON.stringify(arr);
+      if (message !== message_cache) {
+        // Only broadcast diffs.
+        message_cache = message;
+        ws.send(JSON.stringify(arr));
+      }
       audio.data(sineWaves);
       window.requestAnimationFrame(updateAudio);
     }
