@@ -11,47 +11,50 @@ function list() {
 
   function render(msg) {
     var data = JSON.parse(msg.data);
-    var rooms = data.reduce(function(acc, room) {
-      if (room === "/list") {
+    var rooms = data.reduce(function(acc, roomName) {
+      if (roomName === "/list") {
         // Discard data from this room as it is irrelevant.
         return acc;
       }
 
-      if (typeof acc[room] !== "number") {
-        acc[room] = 1;
+      var room = acc.find(function(d) { return d.name === roomName; });
+      if (room && typeof room.count === "number") {
+        room.count += 1;
       } else {
-        acc[room] += 1;
+        acc.push({name: roomName, count: 1});
       }
       return acc;
-    }, {});
+    }, []);
+
+    rooms.sort(function(a, b) { return b.count - a.count });
 
     [].forEach.call(roomsUl.children, function(li, i) {
-      var roomNames = Object.keys(rooms);
-      if (i < roomNames.length) {
+      if (i < rooms.length) {
+
         // Update.
-        var room = roomNames[i];
-        var count = rooms[room];
+        var room = rooms[i];
 
         var roomAnchor = li.querySelector("a");
-        roomAnchor.href = room;
-        roomAnchor.textContent = unescape(room);
+        roomAnchor.href = room.name;
+        roomAnchor.textContent = unescape(room.name);
 
         var countNode = li.querySelector(".count");
-        countNode.textContent = "(" + count + ")";
+        countNode.textContent = room.count;
       } else {
+
         // Exit.
         roomsUl.removeChild(li);
       }
     });
 
-    Object.keys(rooms).slice(roomsUl.children.length).forEach(function(room) {
+    rooms.slice(roomsUl.children.length).forEach(function(room) {
+
       // Enter.
       var li = document.createElement("li");
-      var count = rooms[room];
 
       var roomAnchor = document.createElement("a");
-      roomAnchor.href = room;
-      roomAnchor.textContent = unescape(room);
+      roomAnchor.href = room.name;
+      roomAnchor.textContent = unescape(room.name);
 
       var nameNode = document.createElement("span");
       nameNode.className = "name";
@@ -59,10 +62,10 @@ function list() {
 
       var countNode = document.createElement("span");
       countNode.className = "count";
-      countNode.textContent = "(" + count + ")";
+      countNode.textContent = room.count;
 
       li.appendChild(nameNode);
-      li.appendChild(document.createTextNode(" "));
+      li.appendChild(document.createTextNode(" — "));
       li.appendChild(countNode);
       roomsUl.appendChild(li);
     })

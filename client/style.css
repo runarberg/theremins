@@ -67,14 +67,6 @@ canvas {
     margin: 0.75ex;
 }
 
-.list-section li:nth-child(7n + 0) { color: red; }
-.list-section li:nth-child(7n + 1) { color: orange; }
-.list-section li:nth-child(7n + 2) { color: darkkhaki; }
-.list-section li:nth-child(7n + 3) { color: green; }
-.list-section li:nth-child(7n + 4) { color: blue; }
-.list-section li:nth-child(7n + 5) { color: indigo; }
-.list-section li:nth-child(7n + 6) { color: violet; }
-
 .list-section .name-header,
 .list-section .count-header,
 .list-section .name,
@@ -85,6 +77,7 @@ canvas {
 .list-section .name-header,
 .list-section .name {
     text-align: right;
+    padding-right: 1.2em;
 }
 
 .list-section .count-header,
