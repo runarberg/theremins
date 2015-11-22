@@ -84,11 +84,13 @@ impl Handler for Server {
     }
 }
 
-pub fn serve(host: &str) {
+pub fn serve(ws_host: &str) {
+    use std::process;
+
     let sines = Rc::new(RefCell::new(HashMap::new()));
     let connections = Rc::new(RefCell::new(HashMap::new()));
 
-    if let Err(error) = listen(host, |out| {
+    if let Err(error) = listen(ws_host, |out| {
         Server {
             out: out,
             room: "".to_string(),
@@ -96,7 +98,8 @@ pub fn serve(host: &str) {
             connections: connections.clone(),
         }
     }) {
-        println!("{:?}", error);
+        println!("Error in web socets server: {}", error);
+        process::exit(1);
     };
 
 }
