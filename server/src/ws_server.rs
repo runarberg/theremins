@@ -91,16 +91,20 @@ pub fn serve(ws_host: &str) {
     let connections = Rc::new(RefCell::new(HashMap::new()));
 
     println!("Serving web sockets on {}", &ws_host);
-
-    let _guard = if let Err(error) = listen(ws_host, |out| {
+    let listener = listen(ws_host, |out| {
         Server {
             out: out,
             room: "".to_string(),
             sines: sines.clone(),
             connections: connections.clone(),
         }
-    }) {
-        println!("Error in web socets server: {}", error);
-        process::exit(1);
+    });
+
+    match listener {
+        Ok(_) => (),
+        Err(error) => {
+            println!("Error in web sokcets server: {}", error);
+            process::exit(1);
+        }
     };
 }

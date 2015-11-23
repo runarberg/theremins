@@ -1,4 +1,6 @@
-use hyper::header::{ContentType};
+use std::io::Error;
+
+use hyper::header::ContentType;
 use hyper::method::Method;
 use hyper::mime::{Mime, TopLevel, SubLevel, Attr, Value};
 use hyper::server::{Server, Request,  Response};
@@ -28,49 +30,49 @@ impl Router {
         Router { ws_url: ws_url.to_string() }
     }
 
-    fn route(&self, url: &str, mut res: Response) {
+    fn route(&self, url: &str, mut res: Response) -> Result<(), Error> {
         match url {
             "/style.css" => {
                 res.headers_mut().set(content_type!(Css));
-                res.send(include_bytes!("../../client/style.css")).unwrap();
+                res.send(include_bytes!("../../client/style.css"))
             },
 
             "/audio-context.js" => {
                 res.headers_mut().set(content_type!(Javascript));
-                res.send(include_bytes!("../../client/audio-context.js")).unwrap();
+                res.send(include_bytes!("../../client/audio-context.js"))
             },
 
             "/main.js" => {
                 res.headers_mut().set(content_type!(Javascript));
                 res.send(
                     include_str!("../../client/main.js")
-                        .replace("{{ws_url}}", self.ws_url.as_str())
+                        .replace("{{ws_url}}", &self.ws_url)
                         .as_bytes()
-                ).unwrap();
+                )
             },
 
             "/list.js" => {
                 res.headers_mut().set(content_type!(Javascript));
                 res.send(
                     include_str!("../../client/list.js")
-                        .replace("{{ws_url}}", self.ws_url.as_str())
+                        .replace("{{ws_url}}", &self.ws_url)
                         .as_bytes()
-                ).unwrap();
+                )
             },
 
             "/help" => {
                 res.headers_mut().set(ContentType::html());
-                res.send(include_bytes!("../../client/help.html")).unwrap();
+                res.send(include_bytes!("../../client/help.html"))
             },
 
             "/list" => {
                 res.headers_mut().set(ContentType::html());
-                res.send(include_bytes!("../../client/list.html")).unwrap();
+                res.send(include_bytes!("../../client/list.html"))
             },
 
             _ => {
                 res.headers_mut().set(ContentType::html());
-                res.send(include_bytes!("../../client/index.html")).unwrap();
+                res.send(include_bytes!("../../client/index.html"))
             }
         }
     }
@@ -82,16 +84,24 @@ pub fn serve(http_host: &str, ws_url: &str) {
 
     let server = Server::http(http_host).unwrap();
     let _guard = server.handle(move |req: Request, mut res: Response| {
-        if req.method == Method::Get {
+        let result = if req.method == Method::Get {
             if let RequestUri::AbsolutePath(url) = req.uri {
-                router.route(url.as_str(), res)
+                router.route(&url, res)
             } else {
                 *res.status_mut() = StatusCode::InternalServerError;
-                let _ = res.send(b"500 server error");
+                res.send(b"500 server error")
             }
         } else {
             *res.status_mut() = StatusCode::NotFound;
-            let _ = res.send(b"404 not found");
+            res.send(b"404 not found")
+        };
+
+        match result {
+            Ok(v) => v,
+            Err(e) => {
+                println!("Error in http server: {}", e);
+                return;
+            }
         }
     });
 
