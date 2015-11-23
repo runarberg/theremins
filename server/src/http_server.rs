@@ -32,6 +32,11 @@ impl Router {
 
     fn route(&self, url: &str, mut res: Response) -> Result<(), Error> {
         match url {
+            "/img/termen.png" => {
+                res.headers_mut().set(ContentType::png());
+                res.send(include_bytes!("../../client/img/termen.png"))
+            },
+
             "/style.css" => {
                 res.headers_mut().set(content_type!(Css));
                 res.send(include_bytes!("../../client/style.css"))

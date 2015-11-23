@@ -123,3 +123,15 @@ canvas {
     border-bottom: 1px dashed lightblue;
     text-align: right;
 }
+
+#help {
+    font-size: 1.5em;
+}
+
+#help header {
+    text-align: center;
+}
+
+#help header address {
+    font-style: italic;
+}
