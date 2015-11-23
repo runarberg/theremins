@@ -49,16 +49,21 @@ canvas {
     text-decoration: none;
 }
 
+.list-section .add-room,
+.list-section .rooms {
+    font-size: 1.5em;
+}
+
 .list-section .rooms {
     list-style: none;
-    font-size: 1.5em;
     margin: 0;
     padding: 0;
     width: 100%;
 }
 
+.list-section h2,
 .list-section li,
-.list-section h2 {
+.list-section .add-room {
     display: flex;
     align-items: center;
 }
@@ -69,18 +74,52 @@ canvas {
 
 .list-section .name-header,
 .list-section .count-header,
+.list-section .add-room-name,
+.list-section .add-room-button,
 .list-section .name,
 .list-section .count {
     flex-basis: 50%;
 }
 
 .list-section .name-header,
+.list-section .add-room-name,
 .list-section .name {
     text-align: right;
     padding-right: 1.2em;
 }
 
 .list-section .count-header,
+.list-section .add-room-button,
 .list-section .count {
     padding-left: 1.2em;
+}
+
+.add-room {
+    margin-top: 1em;
+}
+
+.add-room-input,
+.add-room-submit {
+    font-family: serif;
+    font-size: 0.9em;
+    padding: 0.2ex 1.5em;
+}
+
+.add-room-input {
+    padding-right: 0;
+}
+
+.add-room-submit {
+    background: inherit;
+    border: 1px solid lightblue;
+    border-radius: 1em;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.add-room-input {
+    background: inherit;
+    border: 0;
+    border-bottom: 1px dashed lightblue;
+    text-align: right;
 }

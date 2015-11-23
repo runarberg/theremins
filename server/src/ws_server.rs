@@ -18,9 +18,9 @@ impl Server {
             .collect::<Vec<_>>()
             .join(",");
 
-        for t in self.connections.borrow().values() {
-            if t.0 == "/list" {
-                let _ = t.1.send(Message::text(format!("[{}]", json_seq)));
+        for &(ref url, ref out) in self.connections.borrow().values() {
+            if url == "/list" {
+                let _ = out.send(Message::text(format!("[{}]", json_seq)));
             }
         }
     }

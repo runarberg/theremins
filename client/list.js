@@ -12,8 +12,10 @@ function list() {
   function render(msg) {
     var data = JSON.parse(msg.data);
     var rooms = data.reduce(function(acc, roomName) {
-      if (roomName === "/list") {
-        // Discard data from this room as it is irrelevant.
+
+      // Discard data from this room as it is irrelevant, and hide
+      // rooms starting with underscore.
+      if (roomName === "/list" || roomName.startsWith("/_")) {
         return acc;
       }
 
@@ -26,7 +28,7 @@ function list() {
       return acc;
     }, []);
 
-    rooms.sort(function(a, b) { return b.count - a.count });
+    rooms.sort(function(a, b) { return b.count - a.count; });
 
     [].forEach.call(roomsUl.children, function(li, i) {
       if (i < rooms.length) {
@@ -68,8 +70,15 @@ function list() {
       li.appendChild(document.createTextNode(" — "));
       li.appendChild(countNode);
       roomsUl.appendChild(li);
-    })
+    });
   }
 }
+
+byId("add-room").addEventListener("submit", function(e) {
+  e.preventDefault();
+  var form = this;
+  var name = form.querySelector("input[name='name']").value;
+  window.location.pathname = name;
+});
 
 function byId(id) { return document.getElementById(id); }
