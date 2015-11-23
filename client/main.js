@@ -2,7 +2,7 @@ var τ = 2 * Math.PI;
 var twelve_root_2 = Math.pow(2, 1/12);
 var message_cache = "";
 
-var ws = new WebSocket("ws://{{ws_host}}" + window.location.pathname);
+var ws = new WebSocket("ws://{{ws_url}}" + window.location.pathname);
 ws.onopen = app;
 
 function app() {

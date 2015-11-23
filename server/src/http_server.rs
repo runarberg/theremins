@@ -20,12 +20,12 @@ macro_rules! url {
 }
 
 struct Router {
-    ws_host: String,
+    ws_url: String,
 }
 
 impl Router {
-    fn new(ws_host: &str) -> Router {
-        Router { ws_host: ws_host.to_string() }
+    fn new(ws_url: &str) -> Router {
+        Router { ws_url: ws_url.to_string() }
     }
 
     fn route(&self, url: &str, mut res: Response) {
@@ -44,7 +44,7 @@ impl Router {
                 res.headers_mut().set(content_type!(Javascript));
                 res.send(
                     include_str!("../../client/main.js")
-                        .replace("{{ws_host}}", self.ws_host.as_str())
+                        .replace("{{ws_url}}", self.ws_url.as_str())
                         .as_bytes()
                 ).unwrap();
             },
@@ -53,7 +53,7 @@ impl Router {
                 res.headers_mut().set(content_type!(Javascript));
                 res.send(
                     include_str!("../../client/list.js")
-                        .replace("{{ws_host}}", self.ws_host.as_str())
+                        .replace("{{ws_url}}", self.ws_url.as_str())
                         .as_bytes()
                 ).unwrap();
             },
@@ -76,9 +76,9 @@ impl Router {
     }
 }
 
-pub fn serve(http_host: &str, ws_host: &str) {
+pub fn serve(http_host: &str, ws_url: &str) {
 
-    let router = Router::new(ws_host);
+    let router = Router::new(ws_url);
 
     let server = Server::http(http_host).unwrap();
     let _guard = server.handle(move |req: Request, mut res: Response| {

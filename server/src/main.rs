@@ -11,11 +11,10 @@ mod ws_server;
 fn main() {
     let http_host = arg_parse("--http-host", "0.0.0.0:8000");
     let ws_host = arg_parse("--ws-host", "0.0.0.0:8001");
-
-    let ws_host_clone = ws_host.clone();
+    let ws_url = arg_parse("--ws-url", "localhost:8001");
 
     thread::spawn(move || ws_server::serve(&ws_host));
-    thread::spawn(move || http_server::serve(&http_host, &ws_host_clone));
+    thread::spawn(move || http_server::serve(&http_host, &ws_url));
 
     loop {}
 }
