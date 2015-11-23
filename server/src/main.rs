@@ -14,8 +14,6 @@ fn main() {
 
     let ws_host_clone = ws_host.clone();
 
-    println!("Serving web sockets on {}", &ws_host);
-
     thread::spawn(move || ws_server::serve(&ws_host));
     thread::spawn(move || http_server::serve(&http_host, &ws_host_clone));
 

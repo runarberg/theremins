@@ -60,7 +60,7 @@ impl Router {
 
             "/help" => {
                 res.headers_mut().set(ContentType::html());
-                res.send(b"<h1>About!</h1>").unwrap();
+                res.send(include_bytes!("../../client/help.html")).unwrap();
             },
 
             "/list" => {

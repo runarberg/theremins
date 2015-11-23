@@ -90,7 +90,9 @@ pub fn serve(ws_host: &str) {
     let sines = Rc::new(RefCell::new(HashMap::new()));
     let connections = Rc::new(RefCell::new(HashMap::new()));
 
-    if let Err(error) = listen(ws_host, |out| {
+    println!("Serving web sockets on {}", &ws_host);
+
+    let _guard = if let Err(error) = listen(ws_host, |out| {
         Server {
             out: out,
             room: "".to_string(),
@@ -101,5 +103,4 @@ pub fn serve(ws_host: &str) {
         println!("Error in web socets server: {}", error);
         process::exit(1);
     };
-
 }

@@ -11,14 +11,14 @@ Run
 ```bash
 git clone https://github.com/runarberg/theremins.git
 cd server
-cargo build --target release
-./target/release/theremins
+cargo build --release
+./target/release/theremins-server --http-host 0.0.0.0:3000 --ws-host 0.0.0.0:3012
 ```
 
 ### Client
 
 ```bash
-$BROWSER client/index.html
+$BROWSER localhost:3000
 ```
 
 Have fun.
