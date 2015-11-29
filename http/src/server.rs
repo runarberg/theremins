@@ -34,23 +34,23 @@ impl Router {
         match url {
             "/img/termen.png" => {
                 res.headers_mut().set(ContentType::png());
-                res.send(include_bytes!("../../client/img/termen.png"))
+                res.send(include_bytes!("../client/img/termen.png"))
             },
 
             "/style.css" => {
                 res.headers_mut().set(content_type!(Css));
-                res.send(include_bytes!("../../client/style.css"))
+                res.send(include_bytes!("../client/style.css"))
             },
 
             "/audio-context.js" => {
                 res.headers_mut().set(content_type!(Javascript));
-                res.send(include_bytes!("../../client/audio-context.js"))
+                res.send(include_bytes!("../client/audio-context.js"))
             },
 
             "/main.js" => {
                 res.headers_mut().set(content_type!(Javascript));
                 res.send(
-                    include_str!("../../client/main.js")
+                    include_str!("../client/main.js")
                         .replace("{{ws_url}}", &self.ws_url)
                         .as_bytes()
                 )
@@ -59,7 +59,7 @@ impl Router {
             "/list.js" => {
                 res.headers_mut().set(content_type!(Javascript));
                 res.send(
-                    include_str!("../../client/list.js")
+                    include_str!("../client/list.js")
                         .replace("{{ws_url}}", &self.ws_url)
                         .as_bytes()
                 )
@@ -67,17 +67,17 @@ impl Router {
 
             "/help" => {
                 res.headers_mut().set(ContentType::html());
-                res.send(include_bytes!("../../client/help.html"))
+                res.send(include_bytes!("../client/help.html"))
             },
 
             "/list" => {
                 res.headers_mut().set(ContentType::html());
-                res.send(include_bytes!("../../client/list.html"))
+                res.send(include_bytes!("../client/list.html"))
             },
 
             _ => {
                 res.headers_mut().set(ContentType::html());
-                res.send(include_bytes!("../../client/index.html"))
+                res.send(include_bytes!("../client/index.html"))
             }
         }
     }

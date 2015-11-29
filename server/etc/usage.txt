@@ -1,2 +1,0 @@
-Usage:
-    theremins-server [--http-host <hostname>] [--ws-host <hostname>] [--ws-url <url>]

@@ -1,4 +1,4 @@
-var ws = new WebSocket("ws://{{ws_url}}/list");
+var ws = new WebSocket("{{ws_url}}/list");
 
 ws.onopen = list;
 

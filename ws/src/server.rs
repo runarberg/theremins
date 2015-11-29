@@ -60,9 +60,13 @@ impl Handler for Server {
             let sines = self.sines.borrow();
             let json_seq = sines.values()
                 .filter(|&&(ref room, _)| *room == self.room)
-                .map(|&(_, ref sine)| sine.as_str())
-                .collect::<Vec<_>>()
-                .join(",");
+                .fold("".to_string(), |join, &(_, ref sine)| {
+                    if join.len() == 0 {
+                        format!("{}", sine)
+                    } else {
+                        format!("{},{}", join, sine)
+                    }
+                });
 
             for t in self.connections.borrow().values().into_iter() {
                 if t.0 == self.room {

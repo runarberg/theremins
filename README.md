@@ -3,22 +3,42 @@ Theremins
 
 Play the theremin with random strangers from the interet.
 
-Run
----
+Install
+-------
 
-### Server
+This repo proviedes sources for two binaries, an HTTP server and a
+web-socket server. To compile the HTTP server do:
 
 ```bash
 git clone https://github.com/runarberg/theremins.git
-cd server
+cd theremins/http
 cargo build --release
-./target/release/theremins-server --http-host 0.0.0.0:3000 --ws-host 0.0.0.0:3012
 ```
 
-### Client
+To compile the web-socket server simply swap line 2 above with:
 
 ```bash
-$BROWSER localhost:3000
+cd theremins/ws
+```
+
+Run
+---
+
+Run the executibles are located in `target/release/`. For example to
+run the web socket server on port `8001`
+
+```bash
+./theremins/ws/target/release/theremins-ws-server \
+    --address 0.0.0.0:8001
+```
+
+For the HTTP server you have to specify where your web sockets server
+lives, so you need, for example:
+
+```bash
+./theremins/ws/target/release/theremins-http-server \
+    --address 0.0.0.0:8000 \
+    --ws-url ws://localhost:8001
 ```
 
 Have fun.
