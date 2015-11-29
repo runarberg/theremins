@@ -1,16 +1,12 @@
-# Teremins version 0.1.0
-
-FROM schickling/rust
-
+FROM jimmycuadra/rust:1.4.0
 MAINTAINER Rúnar Berg "runarberg@zoho.com"
 
-ADD . /opt/theremins/
+EXPOSE 80
 
-RUN cd /opt/theremins/server && \
+ADD . /opt/source/
+RUN cd /opt/source && \
     cargo build --release && \
-    ln -s /opt/theremins/server/target/release/theremins-server \
-       /usr/local/bin/theremins
+    ln -s /opt/source/target/release/theremins-ws-server \
+          /usr/local/bin/theremins-ws-server
 
-CMD ["theremins", "--http-server", "0.0.0.0:80", "--ws-server", "0.0.0.0:81", "--ws-url", "theremins.club"]
-
-EXPOSE 80 81
+CMD ["theremins-ws-server", "--address", "0.0.0.0:80"]
