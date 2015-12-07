@@ -14,6 +14,13 @@ macro_rules! content_type {
             SubLevel::$sub_level,
             vec![(Attr::Charset, Value::Utf8)]
         ))
+    };
+    ($top_level:ident, Ext($sub_level:expr)) => {
+        ContentType(Mime(
+            TopLevel::$top_level,
+            SubLevel::Ext($sub_level.to_string()),
+            vec![(Attr::Charset, Value::Utf8)]
+        ))
     }
 }
 
@@ -35,6 +42,11 @@ impl Router {
             "/img/termen.png" => {
                 res.headers_mut().set(ContentType::png());
                 res.send(include_bytes!("../client/img/termen.png"))
+            },
+
+            "/img/clouds.svg" => {
+                res.headers_mut().set(content_type!(Image, Ext("svg+xml")));
+                res.send(include_bytes!("../client/img/clouds.svg"))
             },
 
             "/style.css" => {

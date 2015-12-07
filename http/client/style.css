@@ -44,6 +44,12 @@ canvas {
     display: none;
 }
 
+.list-body {
+    background-image: url("/img/clouds.svg");
+    background-position: bottom;
+    background-repeat: repeat-x;
+}
+
 .list-section a {
     color: inherit;
     text-decoration: none;
