@@ -6,4 +6,4 @@ authors = ["runarberg <runarberg@zoho.com>"]
 [dependencies]
 docopt = "0.6"
 rustc-serialize = "0.3"
-ws = "0.3"
+ws = "0.4"

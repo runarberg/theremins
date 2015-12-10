@@ -1,4 +1,4 @@
-FROM jimmycuadra/rust:1.4.0
+FROM jimmycuadra/rust:1.5.0
 MAINTAINER Rúnar Berg "runarberg@zoho.com"
 
 EXPOSE 80

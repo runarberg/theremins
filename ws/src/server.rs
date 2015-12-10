@@ -38,16 +38,14 @@ impl Server {
 
 impl Handler for Server {
     fn on_open(&mut self, handshake: Handshake) -> Result<()> {
-        if let Ok(resource) = handshake.request.resource() {
-            let room = resource.to_string();
-            let out = self.out.clone();
-            self.room = resource.to_string();
-            (*self.connections.borrow_mut())
-                .insert(
-                    self.out.token().as_usize(),
-                    (room, out)
-                );
-        }
+        let room = handshake.request.resource();
+        let token = self.out.token().as_usize();
+
+        self.room = room.to_string();
+        (*self.connections.borrow_mut()).insert(
+            token,
+            (room.to_string(), self.out.clone())
+        );
 
         self.list_connections();
         Ok(())
