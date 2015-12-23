@@ -19,15 +19,103 @@
       </nav>
     </header>
 
-    <section id="help" class="help">
+    <article id="help" class="help">
       <header>
         <h2>Theremins.club</h2>
         <address>
           By <a href="https://runarberg.github.io">Rúnar Berg</a>
         </address>
         <p>Play the theremin with random strangers on the internet.</p>
-        <img src="/img/termen.png">
       </header>
-    </section>
+
+      <p>
+        <i>How do I use this?</i> To play simply point your mouse to a
+        desired location on the rainbowed canvas, press the mouse
+        button and hold it. Release the button again to silence the
+        theremin.
+      </p>
+
+      <p>
+        If you’re lucky enough to be playing on a touch screen
+        display, it is enough for you to touch the canvas where you
+        want to play it. Note that you can play multiple notes at the
+        same time by using more than one finger.
+      </p>
+
+      <p>
+        The vertical axis represents volume (up means louder) and the
+        horizontal axis represents pitch (right means higher). So to
+        play a loud base, click the upper left corner. And to play a
+        soft high tone, press and hold somewhere above the bottom
+        right corner.
+      </p>
+
+      <p>
+        <i>What are the strings in front of the rainbow?</i> The
+         strings in front of the rainbow are sort of like notes on a
+         piano. You don’t have to to use them if you don’t want
+         to. But if you do, a black note on a piano is represented
+         here as a repeated color. With C and C♯ as yellow, D and D♯
+         as green, E as blue, etc. And if you really want to know, the
+         left edge is tuned at A<sub>2</sub> = 110&nbsp;Hz, and the
+         right edge is tuned at A<sub>6</sub> = 1760&nbsp;Hz.
+      </p>
+
+      <p>
+        <i>What are <em>jam sessions</em>?</i> If a session is to noisy
+        for you, you can create a new channel simply by entering a new
+        path in the address-bar of your browser, e.g.
+        <a href="/my-new-channel"><code>/my-new-channel</code></a>,
+        your new session will then be listed under
+        <a href="/list">jam sessions</a> for others to join. If you
+        want a private session start your new channel with an
+        underscore, e.g.
+        <a href="/_my-secret-channel"><code>/_my-secret-channel</code></a>,
+        and you’re channel won’t be listed under jam sessions.
+      </p>
+
+      <p>
+        <i>How did you make this?</i> This app uses the
+        <a href="https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API">
+          Web audio
+        </a>
+        and
+        <a href="https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API">
+          Web sockets
+        </a>
+        technology to connect your theremin session with everyone
+        else’s. The backend is written in
+        <a href="https://www.rust-lang.org/">Rust</a> using
+        <a href="https://github.com/housleyjk/ws-rs">WS-RS</a>, to
+        handle the web socket connections, and
+        <a href="http://hyper.rs/">Hyper</a>, for HTTP connections.
+	This app is
+        <a href="http://opensource.org/licenses/MIT">MIT licenced</a>
+        and you can read (and fork) the
+        <a href="https://github.com/runarberg/theremins">source code</a>
+        on GitHub.
+      </p>
+      <figure>
+        <img src="/img/termen.png">
+        <figcaption>
+          <a href="https://en.wikipedia.org/wiki/L%C3%A9on_Theremin">Lev Sergeyevich Termen</a>
+          playing his invention. He used his hands to play, you can
+          use a computer mouse or touch your screen with your finger
+          or a pen instead.
+          <i>
+            Picture is public domain via
+            <a href="https://commons.wikimedia.org/wiki/File%3ATermen_playing_his_invention.jpg">Wikimedia Commons</a>.
+          </i>
+        </figcaption>
+      </figure>
+      <footer>
+        <a href="https://github.com/runarberg/theremins">
+          <img src="https://camo.githubusercontent.com/365986a132ccd6a44c23a9169022c0b5c890c387/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f7265645f6161303030302e706e67"
+               alt="Fork me on GitHub"
+               class="github-fork-ribbon"
+               data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png">
+        </a>
+      </footer>
+    </article>
   </body>
 </html>

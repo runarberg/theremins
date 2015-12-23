@@ -5,9 +5,17 @@ html, body {
     padding: 0;
 }
 
-header a {
-    color: inherit;
+a,
+a:active,
+a:visited {
+    color: darkblue;
     text-decoration: none;
+}
+
+header a
+header a:active,
+header a:visited {
+    color: inherit;
 }
 
 canvas {
@@ -19,6 +27,7 @@ canvas {
     background: #236929;
     color: aliceblue;
     display: flex;
+    justify-content: space-between;
 }
 
 .main-header h1 {
@@ -28,6 +37,7 @@ canvas {
 
 .main-nav ul {
     list-style: none;
+    margin: 0 1em;
 }
 
 .main-nav ul li {
@@ -131,13 +141,47 @@ canvas {
 }
 
 #help {
-    font-size: 1.5em;
+    font-size: 1.2em;
+    line-height: 1.25em;
+    padding-top: 2.5em;
+    position: relative;
+    text-align: justify;
+}
+
+#help h2 {
+    margin-top: 0;
+}
+
+#help p,
+#help figure {
+    max-width: 38em;
+    margin: 0.5em auto;
+}
+
+#help figure {
+    text-align: center;
+}
+
+#help figcaption {
+    font-size: 0.9em;
+    margin: 0.2em auto;
+    max-width: 36em;
+    text-align: justify;
 }
 
 #help header {
+    font-size: 1.25em;
+    margin-bottom: 1em;
     text-align: center;
 }
 
 #help header address {
     font-style: italic;
+}
+
+.github-fork-ribbon {
+    border: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
 }
