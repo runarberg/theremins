@@ -71,8 +71,8 @@ function app() {
     e.preventDefault();
     forEach(e.changedTouches, function(touch) {
       pointers.set("touch_" + touch.identifier, {
-        x: touch.clientX / canvas.width,
-        y: touch.clientY / canvas.height
+        x: (touch.clientX - canvas.offsetLeft) / canvas.width,
+        y: (touch.clientY - canvas.offsetTop) / canvas.height
       });
     });
   });
@@ -88,8 +88,8 @@ function app() {
     e.preventDefault();
     forEach(e.changedTouches, function(touch) {
       var pointer = pointers.get("touch_" + touch.identifier);
-      pointer.x = touch.clientX / canvas.width;
-      pointer.y = touch.clientY / canvas.height;
+      pointer.x = (touch.clientX - canvas.offsetLeft) / canvas.width;
+      pointer.y = (touch.clientY - canvas.offsetTop) / canvas.height;
     });
   });
 
