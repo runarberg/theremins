@@ -4,6 +4,9 @@ var message_cache = "";
 
 var ws = new WebSocket("{{ws_url}}" + window.location.pathname);
 ws.onopen = app;
+ws.onclose = function() {
+  sleep(500).then(promptRefresh);
+}
 
 function app() {
   "use strict";
@@ -223,7 +226,25 @@ function app() {
   }
 }
 
+function promptRefresh() {
+  var modal = byId("prompt-refresh-modal");
+  modal.style.display = "block";
+}
+
+byId("refresh-button").addEventListener("click", function(e) {
+  e.preventDefault();
+  window.location.reload();
+})
+
 function byId(id) { return document.getElementById(id); }
+
+function sleep(ms) {
+  return {
+    then: function(fn) {
+      window.setTimeout(fn, ms);
+    }
+  }
+}
 
 function forEach(iterable, fn) {
   return Array.prototype.forEach.call(iterable, fn);

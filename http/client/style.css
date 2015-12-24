@@ -12,7 +12,7 @@ a:visited {
     text-decoration: none;
 }
 
-header a
+header a,
 header a:active,
 header a:visited {
     color: inherit;
@@ -51,6 +51,30 @@ canvas {
 
 .main-controls {
     /* No controls, for now. */
+    display: none;
+}
+
+.modal {
+    background-color: rgba(35, 105, 41, 0.8);
+    color: aliceblue;
+    display: absolute;
+    font-size: 1.2em;
+    max-width: 36em;
+    padding: 1.2em 2.4em;
+    position: absolute;
+    top: 25%;
+    left: 20%;
+    right: 20%;
+    text-align: center;
+}
+
+.modal a,
+.modal a:active,
+.modal a:visited {
+    color: lightblue;
+}
+
+.modal.hidden {
     display: none;
 }
 
