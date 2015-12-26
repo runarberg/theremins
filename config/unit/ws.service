@@ -1,0 +1,14 @@
+[Unit]
+Description=Theremins WS Service
+After=docker.service
+
+[Service]
+TimeoutStartSec=0
+ExecStartPre=-/usr/bin/docker kill ws1
+ExecStartPre=-/usr/bin/docker rm ws1
+ExecStartPre=/usr/bin/docker pull runarberg/theremins-ws
+ExecStart=/usr/bin/docker run --name ws1 runarberg/theremins-ws
+ExecStop=/usr/bin/docker stop ws1
+
+[Install]
+WantedBy=multi-user.target

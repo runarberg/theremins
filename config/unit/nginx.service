@@ -1,0 +1,16 @@
+[Unit]
+Description=Theremins nginx Service
+After=docker.service
+After=ws.service
+After=http.service
+
+[Service]
+TimoutStartSec=0
+ExecStartPre=-/usr/bin/docker kill nginx1
+ExecStartPre=-/usr/bin/docker rm nginx1
+ExecStartPre=/usr/bin/docker pull runarberg/theremins-nginx
+ExecStart=/usr/bin/docker run --name nginx1 --link http1:http1 --link ws1:ws1 -p 80:80 runarberg/theremins-nginx
+ExecStop=/usr/bin/docker stop nginx1
+
+[Install]
+WantedBy=multi-user.target

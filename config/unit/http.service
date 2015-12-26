@@ -1,0 +1,14 @@
+[Unit]
+Description=Theremins HTTP Service
+After=docker.service
+
+[Service]
+TimeoutStartSec=0
+ExecStartPre=-/usr/bin/docker kill http1
+ExecStartPre=-/usr/bin/docker rm http1
+ExecStartPre=/usr/bin/docker pull runarberg/theremins-http
+ExecStart=/usr/bin/docker run --name http1 runarberg/theremins-http
+ExecStop=/usr/bin/docker stop http1
+
+[Install]
+WantedBy=multi-user.target
