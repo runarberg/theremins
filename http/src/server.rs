@@ -39,6 +39,16 @@ impl Router {
 
     fn route(&self, url: &str, mut res: Response) -> Result<(), Error> {
         match url {
+            "/favicon.ico" => {
+                res.headers_mut().set(content_type!(Image, Ext("vnd.microsoft.icon")));
+                res.send(include_bytes!("../client/favicon.ico"))
+            },
+
+            "/robots.txt" => {
+                res.headers_mut().set(content_type!(Plain));
+                res.send(include_bytes!("../client/robots.txt"))
+            },
+
             "/img/termen.png" => {
                 res.headers_mut().set(ContentType::png());
                 res.send(include_bytes!("../client/img/termen.png"))
