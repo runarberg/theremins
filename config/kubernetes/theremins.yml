@@ -20,20 +20,20 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: theremins-http-server
+  name: theremins-http
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: theremins-http-server
+      app: theremins-http
   template:
     metadata:
       labels:
-        app: theremins-http-server
+        app: theremins-http
     spec:
       containers:
-        - name: theremins-http-server
-          image: theremins-http-server:0.2.0
+        - name: theremins-http
+          image: runarberg/theremins-http:0.2.0
           ports:
             - containerPort: 80
           env:
@@ -45,20 +45,20 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: theremins-ws-server
+  name: theremins-ws
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: theremins-ws-server
+      app: theremins-ws
   template:
     metadata:
       labels:
-        app: theremins-ws-server
+        app: theremins-ws
     spec:
       containers:
-        - name: theremins-ws-server
-          image: theremins-ws-server:0.2.0
+        - name: theremins-ws
+          image: runarberg/theremins-ws:0.2.0
           ports:
             - containerPort: 80
           env:
@@ -70,7 +70,7 @@ kind: Service
 metadata:
   name: theremins-nginx
 spec:
-  type: NodePort
+  type: LoadBalancer
   ports:
     - port: 80
       targetPort: 80
@@ -78,24 +78,24 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: theremins-http-server
+  name: theremins-http
 spec:
-  type: LoadBalancer
+  type: NodePort
   ports:
     - port: 80
   selector:
-    app: theremins-http-server
+    app: theremins-http
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: theremins-ws-server
+  name: theremins-ws
 spec:
-  type: LoadBalancer
+  type: NodePort
   ports:
     - port: 80
   selector:
-    app: theremins-ws-server
+    app: theremins-ws
 ---
 apiVersion: extensions/v1beta1
 kind: Ingress
@@ -110,11 +110,11 @@ spec:
       http:
         paths:
           - backend:
-              serviceName: theremins-http-server
+              serviceName: theremins-http
               servicePort: 80
     - host: ws.theremins.club
       http:
         paths:
           - backend:
-              serviceName: theremins-ws-server
+              serviceName: theremins-ws
               servicePort: 80
