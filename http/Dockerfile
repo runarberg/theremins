@@ -1,12 +1,14 @@
-FROM jimmycuadra/rust:1.5.0
-MAINTAINER Rúnar Berg "runarberg@zoho.com"
+FROM rust:1.26.2
+LABEL maintainer="runarberg <runarberg@zoho.com>"
 
 EXPOSE 80
 
-ADD . /opt/source/
-RUN cd /opt/source && \
-    cargo build --release && \
-    ln -s /opt/source/target/release/theremins-http-server \
-          /usr/local/bin/theremins-http-server
+WORKDIR /usr/src/theremins-http-server
+ADD . .
 
-CMD ["theremins-http-server", "--address", "0.0.0.0:80", "--ws-url", "ws://ws.theremins.club"]
+RUN cargo install
+
+ENV THEREMINS_HTTP_PORT=80
+ENV THEREMINS_WS_URL="ws://ws.theremins.test"
+
+CMD ["theremins-http-server"]

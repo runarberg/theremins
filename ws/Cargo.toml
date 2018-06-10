@@ -1,9 +1,10 @@
 [package]
 name = "theremins-ws-server"
-version = "0.1.0"
+version = "0.2.0"
 authors = ["runarberg <runarberg@zoho.com>"]
 
 [dependencies]
-docopt = "0.6"
-rustc-serialize = "0.3"
-ws = "0.4"
+docopt = "1"
+serde = "1.0"
+serde_derive = "1.0"
+ws = "0.7"

@@ -1,136 +1,100 @@
-use std::io::Error;
+use futures::future;
+use http;
+use hyper::{Body, Method, Request, Response, Server, StatusCode};
+use hyper::rt::{Future, run};
+use hyper::service::service_fn;
+use std::vec::Vec;
 
-use hyper::header::ContentType;
-use hyper::method::Method;
-use hyper::mime::{Mime, TopLevel, SubLevel, Attr, Value};
-use hyper::server::{Server, Request,  Response};
-use hyper::status::StatusCode;
-use hyper::uri::RequestUri;
+static FAVICON_ICO: &[u8] = include_bytes!("../client/favicon.ico");
+static TERMEN_PNG: &[u8] = include_bytes!("../client/img/termen.png");
 
-macro_rules! content_type {
-    ($sub_level:ident) => {
-        ContentType(Mime(
-            TopLevel::Text,
-            SubLevel::$sub_level,
-            vec![(Attr::Charset, Value::Utf8)]
-        ))
-    };
-    ($top_level:ident, Ext($sub_level:expr)) => {
-        ContentType(Mime(
-            TopLevel::$top_level,
-            SubLevel::Ext($sub_level.to_string()),
-            vec![(Attr::Charset, Value::Utf8)]
-        ))
-    }
+type BoxFut = Box<Future<Item=Response<Body>, Error=http::Error> + Send>;
+
+struct App {
+    list_js: Vec<u8>,
+    main_js: Vec<u8>,
 }
 
-macro_rules! url {
-    ($href:expr) => { RequestUri::AbsolutePath($href.to_string()) }
-}
+impl App {
+    fn new(ws_url: &str) -> App {
+        App {
+            list_js: include_str!("../client/list.js")
+                .replace("{{ws_url}}", ws_url)
+                .into(),
 
-struct Router {
-    ws_url: String,
-}
-
-impl Router {
-    fn new(ws_url: &str) -> Router {
-        Router { ws_url: ws_url.to_string() }
-    }
-
-    fn route(&self, url: &str, mut res: Response) -> Result<(), Error> {
-        match url {
-            "/favicon.ico" => {
-                res.headers_mut().set(content_type!(Image, Ext("vnd.microsoft.icon")));
-                res.send(include_bytes!("../client/favicon.ico"))
-            },
-
-            "/robots.txt" => {
-                res.headers_mut().set(content_type!(Plain));
-                res.send(include_bytes!("../client/robots.txt"))
-            },
-
-            "/img/termen.png" => {
-                res.headers_mut().set(ContentType::png());
-                res.send(include_bytes!("../client/img/termen.png"))
-            },
-
-            "/img/clouds.svg" => {
-                res.headers_mut().set(content_type!(Image, Ext("svg+xml")));
-                res.send(include_bytes!("../client/img/clouds.svg"))
-            },
-
-            "/style.css" => {
-                res.headers_mut().set(content_type!(Css));
-                res.send(include_bytes!("../client/style.css"))
-            },
-
-            "/audio-context.js" => {
-                res.headers_mut().set(content_type!(Javascript));
-                res.send(include_bytes!("../client/audio-context.js"))
-            },
-
-            "/main.js" => {
-                res.headers_mut().set(content_type!(Javascript));
-                res.send(
-                    include_str!("../client/main.js")
-                        .replace("{{ws_url}}", &self.ws_url)
-                        .as_bytes()
-                )
-            },
-
-            "/list.js" => {
-                res.headers_mut().set(content_type!(Javascript));
-                res.send(
-                    include_str!("../client/list.js")
-                        .replace("{{ws_url}}", &self.ws_url)
-                        .as_bytes()
-                )
-            },
-
-            "/help" => {
-                res.headers_mut().set(ContentType::html());
-                res.send(include_bytes!("../client/help.html"))
-            },
-
-            "/list" => {
-                res.headers_mut().set(ContentType::html());
-                res.send(include_bytes!("../client/list.html"))
-            },
-
-            _ => {
-                res.headers_mut().set(ContentType::html());
-                res.send(include_bytes!("../client/index.html"))
-            }
+            main_js: include_str!("../client/main.js")
+                .replace("{{ws_url}}", ws_url)
+                .into(),
         }
     }
-}
 
-pub fn serve(http_host: &str, ws_url: &str) {
+    fn handle(&self, req: Request<Body>) -> BoxFut {
+        let response = match (req.method(), req.uri().path()) {
+            (&Method::GET, "/favicon.ico") => Response::builder()
+                .header("Content-Type", "image/vnd.microsoft.icon")
+                .body(Body::from(FAVICON_ICO)),
 
-    let router = Router::new(ws_url);
+            (&Method::GET, "/robots.txt") => Response::builder()
+                .header("Content-Type", "text/plain")
+                .body(Body::from(include_str!("../client/robots.txt"))),
 
-    let server = Server::http(http_host).unwrap();
-    let _guard = server.handle(move |req: Request, mut res: Response| {
-        let result = if req.method == Method::Get {
-            if let RequestUri::AbsolutePath(url) = req.uri {
-                router.route(&url, res)
-            } else {
-                *res.status_mut() = StatusCode::InternalServerError;
-                res.send(b"500 server error")
-            }
-        } else {
-            *res.status_mut() = StatusCode::NotFound;
-            res.send(b"404 not found")
+            (&Method::GET, "/img/termen.png") => Response::builder()
+                .header("Content-Type", "image/png")
+                .body(Body::from(TERMEN_PNG)),
+
+            (&Method::GET, "/img/clouds.svg") => Response::builder()
+                .header("Content-Type", "image/svg+xml")
+                .body(Body::from(include_str!("../client/img/clouds.svg"))),
+
+            (&Method::GET, "/style.css") => Response::builder()
+                .header("Content-Type", "text/css")
+                .body(Body::from(include_str!("../client/style.css"))),
+
+            (&Method::GET, "/audio-context.js") => Response::builder()
+                .header("Content-Type", "text/javascript")
+                .body(Body::from(include_str!("../client/audio-context.js"))),
+
+            (&Method::GET, "/main.js") => Response::builder()
+                .header("Content-Type", "text/javascript")
+                .body(Body::from(self.main_js.clone())),
+
+            (&Method::GET, "/list.js") => Response::builder()
+                .header("Content-Type", "text/javascript")
+                .body(Body::from(self.list_js.clone())),
+
+            (&Method::GET, "/help") => Response::builder()
+                .header("Content-Type", "text/html")
+                .body(Body::from(include_str!("../client/help.html"))),
+
+            (&Method::GET, "/list") => Response::builder()
+                .header("Content-Type", "text/html")
+                .body(Body::from(include_str!("../client/list.html"))),
+
+            (&Method::GET, _) => Response::builder()
+                .header("Content-Type", "text/html")
+                .body(Body::from(include_str!("../client/index.html"))),
+
+            _ => Response::builder()
+                .status(StatusCode::NOT_FOUND)
+                .body(Body::from("404 not found")),
+
         };
 
-        match result {
-            Ok(v) => v,
-            Err(e) => {
-                println!("Error in http server: {}", e);
-                return;
-            }
-        }
-    });
+        Box::new(future::result(response))
+    }
+}
 
-    println!("Serving HTTP on {}", &http_host);
+pub fn serve(port: u16, ws_url: String) {
+    let addr = ([0, 0, 0, 0], port).into();
+    let server = Server::bind(&addr)
+        .serve(move || {
+            let app = App::new(&ws_url);
+
+            service_fn(move |req| app.handle(req))
+        })
+        .map_err(|e| eprintln!("server error: {}", e));
+
+    println!("Serving HTTP on {}", &addr);
+
+    run(server)
 }

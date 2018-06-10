@@ -1,8 +1,12 @@
-extern crate rustc_serialize;
 extern crate docopt;
+extern crate futures;
+extern crate http;
 extern crate hyper;
+#[macro_use]
+extern crate serde_derive;
 
 use docopt::Docopt;
+use std::env;
 
 mod server;
 
@@ -10,25 +14,37 @@ const USAGE: &'static str = "
 HTTP server for theremins.club
 
 Usage:
-  theremins-http-server [--address <address>] [--ws-url <url>]
+  theremins-http-server [--port <port>] [--ws-url <url>]
   theremins-http-server --help
 
 Options:
-  -h --help            Show this screen.
-  --address <address>  HTTP address to listen to [default: 0.0.0.0:8000].
-  --ws-url <url>       Web Socket URL to point to [default: ws://localhost:8001].
+  -h --help       Show this screen
+  --port <port>   HTTP address to listen to [env: THEREMINS_HTTP_PORT]
+  --ws-url <url>  Web Socket URL to point to [env: THEREMINS_WS_URL].
 ";
 
-#[derive(Debug, RustcDecodable)]
+#[derive(Debug, Deserialize)]
 struct Args {
-    flag_address: String,
-    flag_ws_url: String,
+    flag_port: Option<u16>,
+    flag_ws_url: Option<String>,
 }
 
 fn main() {
     let args: Args = Docopt::new(USAGE)
-        .and_then(|d| d.decode())
+        .and_then(|d| d.deserialize())
         .unwrap_or_else(|e| e.exit());
 
-    server::serve(&args.flag_address, &args.flag_ws_url);
+    let port = args.flag_port
+        .or_else(|| {
+            env::var("THEREMINS_HTTP_PORT")
+                .ok()
+                .and_then(|foo| foo.parse().ok())
+        })
+        .unwrap_or(8000);
+
+    let ws_url = args.flag_ws_url
+        .or_else(|| env::var("THEREMINS_WS_URL").ok())
+        .unwrap_or("ws://localhost:8001".into());
+
+    server::serve(port, ws_url);
 }

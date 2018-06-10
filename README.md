@@ -28,8 +28,7 @@ Run the executibles are located in `target/release/`. For example to
 run the web socket server on port `8001`
 
 ```bash
-./theremins/ws/target/release/theremins-ws-server \
-    --address 0.0.0.0:8001
+./theremins/ws/target/release/theremins-ws-server --port 8001
 ```
 
 For the HTTP server you have to specify where your web sockets server
@@ -37,7 +36,7 @@ lives, so you need, for example:
 
 ```bash
 ./theremins/ws/target/release/theremins-http-server \
-    --address 0.0.0.0:8000 \
+    --port 8000 \
     --ws-url ws://localhost:8001
 ```
 

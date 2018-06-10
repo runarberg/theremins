@@ -3,12 +3,13 @@ use std::rc::Rc;
 use std::cell::RefCell;
 
 use ws::{listen, Handler, Handshake, Sender, Result, Message, CloseCode, Error};
+use ws::util::Token;
 
 struct Server {
     out: Sender,
     room: String,
-    sines: Rc<RefCell<HashMap<usize, (String, String)>>>,
-    connections: Rc<RefCell<HashMap<usize, (String, Sender)>>>,
+    sines: Rc<RefCell<HashMap<Token, (String, String)>>>,
+    connections: Rc<RefCell<HashMap<Token, (String, Sender)>>>,
 }
 
 impl Server {
@@ -28,9 +29,9 @@ impl Server {
     fn cleanup(&mut self)  {
         let token = self.out.token();
         (*self.sines.borrow_mut())
-            .remove(&token.as_usize());
+            .remove(&token);
         (*self.connections.borrow_mut())
-            .remove(&token.as_usize());
+            .remove(&token);
 
         self.list_connections();
     }
@@ -39,7 +40,7 @@ impl Server {
 impl Handler for Server {
     fn on_open(&mut self, handshake: Handshake) -> Result<()> {
         let room = handshake.request.resource();
-        let token = self.out.token().as_usize();
+        let token = self.out.token();
 
         self.room = room.to_string();
         (*self.connections.borrow_mut()).insert(
@@ -54,7 +55,7 @@ impl Handler for Server {
     fn on_message(&mut self, msg: Message) -> Result<()> {
         if let Ok(text) = msg.into_text() {
             (*self.sines.borrow_mut())
-                .insert(self.out.token().as_usize(), (self.room.clone(), text));
+                .insert(self.out.token(), (self.room.clone(), text));
             let sines = self.sines.borrow();
             let json_seq = sines.values()
                 .filter(|&&(ref room, _)| *room == self.room)
@@ -86,9 +87,10 @@ impl Handler for Server {
     }
 }
 
-pub fn serve(ws_host: &str) {
+pub fn serve(port: u16) {
     use std::process;
 
+    let ws_host = format!("0.0.0.0:{}", port);
     let sines = Rc::new(RefCell::new(HashMap::new()));
     let connections = Rc::new(RefCell::new(HashMap::new()));
 

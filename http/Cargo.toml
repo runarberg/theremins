@@ -1,9 +1,12 @@
 [package]
 name = "theremins-http-server"
-version = "0.1.0"
+version = "0.2.0"
 authors = ["runarberg <runarberg@zoho.com>"]
 
 [dependencies]
-docopt = "0.6"
-hyper = "0.7"
-rustc-serialize = "0.3"
+docopt = "1"
+futures = "0.1"
+http = "0.1.5"
+hyper = "0.12"
+serde = "1.0"
+serde_derive = "1.0"
